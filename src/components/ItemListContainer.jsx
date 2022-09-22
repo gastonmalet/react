@@ -1,54 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import Footer from "./Footer";
+import Header from "./Header";
+import Products from "./Products";
 import ItemList from "./ItemList";
-import boligrafo from "./imagenes/boligrafo.jpg"
-import resma from "./imagenes/resmaa.jpg"
 
-const ItemListContainer = () => {
+const ItemListContainer = ( { saludo }) => {
+    const {id} = useParams();
+    const [items, setItems] = useState([]);
 
-
-    const [items, setItems] = useState ([]);
     useEffect(() => {
-
-        const productos = [
-            {
-                id: 1,
-                nombre: 'Boligrafos',
-                precio: 640,
-                imagen: {boligrafo},
-            },
-            {
-                id: 2,
-                nombre: 'Resma Ledesma A4',
-                precio: 677,
-                imagen: {resma},
-            },
-            {
-                id: 3,
-                nombre: 'Cuaderno Avon',
-                precio: 312,
-                imagen: 'imagenes/cuadern.jpg'
-            },
-    
-        ];
-
         const getProductos = new Promise((resolve) => {
             setTimeout(() => {
-                resolve(productos);
-            }, 2000);
+                let productos = (id) ? Products.filter(producto => producto.categoria === id) : Products;
+                resolve((productos.length > 0) ? productos : Products);
+            }, 500);
         });
 
         getProductos.then((respuesta) => {
             setItems(respuesta);
         });
-    }, []);
+    }, [id]);
 
     return (
-        <div className="container">
-            <ItemList items={items} />
+        <div className="container-fluid">
+            <Header />
+            <div className="container">
+            <h3 style={{ textAlign: 'center' }}> {saludo}</h3>
+                <ItemList items={items} />
+            </div>
+            <Footer />    
         </div>
     )
 }
-
-
 
 export default ItemListContainer;
